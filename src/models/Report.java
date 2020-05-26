@@ -59,8 +59,12 @@ public class Report{
     @Column(name="created_at",nullable=false)
     private Timestamp created_at;
 
-    @Column(name="apdated_at",nullable=false)
+    @Column(name="updated_at",nullable=false)
     private Timestamp updated_at;
+
+    @Column(name="favorite_count",nullable=false)
+    private Integer favorite_count;
+
 
     public Integer getId() {
         return id;
@@ -116,6 +120,14 @@ public class Report{
 
     public void setUpdated_at(Timestamp updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public Integer getFavorite_count() {
+        return favorite_count;
+    }
+
+    public void setFavorite_count(Integer favorite_count) {
+        this.favorite_count = favorite_count;
     }
 
 }
