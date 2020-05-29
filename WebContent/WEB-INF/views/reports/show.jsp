@@ -38,6 +38,14 @@
                     </tbody>
                </table>
 
+               <input type="hidden" name="_fav" value="${_fav}" />
+               <form name=MyForm action="/favorites/create" method=post>
+               <button type="submit">いいね</button>
+               <input type=hidden name=MySubmit>
+               </form>
+
+               いいねした人数:<c:out value="${report.favorite_count}" />
+
                <c:if test="${sessionScope.login_employee.id==report. employee.id}">
                     <p><a href="<c:url value="/reports/edit?id=${report.id}" />">この日報を編集する</a></p>
                </c:if>
