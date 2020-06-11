@@ -46,6 +46,7 @@ public class Report{
     @JoinColumn(name="employee_id",nullable=false)
     private Employee employee;
 
+
     @Column(name="report_date",nullable=false)
     private Date report_date;
 

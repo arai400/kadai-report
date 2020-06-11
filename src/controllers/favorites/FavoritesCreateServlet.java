@@ -3,14 +3,15 @@ package controllers.favorites;
 import java.io.IOException;
 
 import javax.persistence.EntityManager;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import models.Employee;
 import models.Favorite_logs;
+import models.Report;
 import utils.DBUtil;
 
 /**
@@ -29,29 +30,25 @@ public class FavoritesCreateServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String _token = (String)request.getParameter("_token");
+        String report_id = (String)request.getParameter("id");//idを拾う
 
+        if(_token != null && _token.equals(request.getSession().getId())) {
            EntityManager em =DBUtil.createEntityManager();
            Favorite_logs f =new Favorite_logs();
 
-           // 全件数を取得
-           long favoritelogs_count = (long)em.createNamedQuery("getFavorite_logsCount", Long.class)
-                                         .getSingleResult();
+           Report r=em.find(Report.class,Integer.parseInt(request.getParameter("id"))); //文字列を変換 findメソッドで拾う
 
-           if(favoritelogs_count==1){
-               //レコードが存在するためいいねカウント減少
-           }
-           else{
-               //レコードが存在しないためいいねカウント増加
-           }
-
-           RequestDispatcher rd= request.getRequestDispatcher("/WEB-INF/views/employees/show.jsp");
-           rd.forward(request,response);
+           f.setEmployee((Employee)request.getSession().getAttribute("login_employee"));//ログインしている人をsetEmployeeにセット
+           f.setReport(r);//閲覧中のレポートのデータをsetReportにセット
+           f.setFavorite_flag(1);//flagを1に設定
 
            em.getTransaction().begin();
            em.persist(f);
            em.getTransaction().commit();
            em.close();
 
-           response.sendRedirect(request.getContextPath()+"/reports/index");
+           response.sendRedirect(request.getContextPath()+"/reports/show?id="+report_id);
         }
     }
+}

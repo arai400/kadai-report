@@ -11,18 +11,22 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-@Table(name="favorite_logs")
+@Table(name="favoriteboxes")
 @NamedQueries({
     @NamedQuery(
-            name = "getFavorite_logsCount",
-            query = "SELECT COUNT(f) FROM Favorite_logs AS f"
-            //このままだとテーブル(いいねログ)の全てのレコードを抽出してしまうので、条件を付けて
-            //「今ログインしている人」と「いいねをしようとした記事」だけ抽出するようにする
+            name = "getFavoriteboxesCount",     //対象の日報の番号だけ抽出し、いいねの合計をカウントする
+            query = "SELECT COUNT(fb) FROM Favoriteboxes AS fb where fb.report=:report"
+            ),
+
+@NamedQuery(
+            name = "getsomeFavoriteboxes",   //favoriteboxesの中の (select)その社員の (where)report のみ抽出
+            query = "SELECT fb FROM Favoriteboxes AS fb where fb.report=:report and fb.employee=:employee"
             )
     })
 
+
 @Entity
-public class Favorite_logs {
+public class Favoriteboxes {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +40,6 @@ public class Favorite_logs {
     @JoinColumn(name="report_id",nullable=false)
     private Report report;
 
-    @Column(name="favorite_flag")
-    private Integer favorite_flag;
 
     public Integer getId() {
         return id;
@@ -62,14 +64,5 @@ public class Favorite_logs {
     public void setReport(Report report) {
         this.report = report;
     }
-
-    public Integer getFavorite_flag() {
-        return favorite_flag;
-    }
-
-    public void setFavorite_flag(Integer favorite_flag) {
-        this.favorite_flag = favorite_flag;
-    }
-
 
 }
